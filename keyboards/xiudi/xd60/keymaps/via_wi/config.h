@@ -19,3 +19,6 @@
 #define RGBLIGHT_LAYERS
 // Allow Light Layers to override RGB off configuration
 #define RGBLIGHT_LAYERS_OVERRIDE_RGB_OFF
+
+#define TAPPING_TERM 150
+#define HOLD_ON_OTHER_KEY_PRESS
