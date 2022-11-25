@@ -18,73 +18,55 @@
 
 
 
-bool get_hold_on_other_key_press(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-        case LT(2,KC_CAPS):
-            // Immediately select the hold action when another key is pressed.
-            return true;
-        default:
-            // Do not select the hold action when another key is pressed.
-            return false;
-    }
-}
 
-void rgb_matrix_indicators_user(void) {
-	if (host_keyboard_led_state().caps_lock) {
-		rgb_matrix_set_color_all(RGB_RED);
-		return;
-	}
+//void rgb_matrix_indicators_user(void) {
+//	if (host_keyboard_led_state().caps_lock) {
+//		rgb_matrix_set_color_all(RGB_RED);
+//		return;
+//	}
+//}
 
-	switch(get_highest_layer(layer_state|default_layer_state)) {
-		case 2:
-			rgb_matrix_set_color_all(RGB_PURPLE);
-			//rgb_matrix_mode_noeeprom(RGB_MATRIX_DUAL_BEACON);
-			break;
-		case 3:
-			rgb_matrix_set_color_all(RGB_SPRINGGREEN);
-			//rgb_matrix_mode_noeeprom(RGB_MATRIX_CYCLE_UP_DOWN);
-			break;
-		case 4:
-			rgb_matrix_set_color_all(RGB_YELLOW);
-			break;
-        default:
-            break;
-
-	}
-
-}
-
-//void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 //    if (host_keyboard_led_state().caps_lock) {
-//
+//    	rgb_matrix_set_color_all(RGB_RED);
+//    	/*
 //        for (uint8_t i = led_min; i <= led_max; i++) {
 //            if (g_led_config.flags[i] & LED_FLAG_KEYLIGHT) {
 //                rgb_matrix_set_color(i, RGB_RED);
 //            }
 //        }
-//        return;
+//        */
 //    }
-//
-//    for (uint8_t i = led_min; i <= led_max; i++) {
-//        switch(get_highest_layer(layer_state|default_layer_state)) {
-//            case 2:
-//                rgb_matrix_set_color(i, RGB_BLUE);
-//                break;
-//            case 3:
-//                rgb_matrix_set_color(i, RGB_YELLOW);
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-//}
 
-void caplock_layer_rgb(void){
+    uint8_t layer = get_highest_layer(layer_state);
+    if(layer>1){
+    	if (!host_keyboard_led_state().caps_lock) {
+    		rgb_matrix_set_color_all(RGB_OFF);
+    	}
+    	//rgb_matrix_set_color(layer, RGB_PURPLE);
+    	rgb_matrix_set_color(layer, RGB_RED);
+    }
+    /*
+	switch (get_highest_layer(layer_state)) {
+		case 2:
+			rgb_matrix_set_color(2, RGB_PURPLE);
+			return;
+		case 3:
+			rgb_matrix_set_color(3, RGB_PURPLE);
+			return;
+		case 4:
+			rgb_matrix_set_color(4, RGB_PURPLE);
+			return;
+	}
+	*/
+}
+
+void caplock_layer_rgb(layer_state_t state){
 	if (host_keyboard_led_state().caps_lock) {
 		rgb_matrix_enable_noeeprom();
 		return;
 	}
-	switch (get_highest_layer(layer_state)) {
+	switch (get_highest_layer(state)) {
 		case 2:
 			rgb_matrix_enable_noeeprom();
 			return;
@@ -99,7 +81,7 @@ void caplock_layer_rgb(void){
 
 }
 bool led_update_user(led_t led_state) {
-	caplock_layer_rgb();
+	caplock_layer_rgb(layer_state);
 	/*
     static uint8_t caps_state = 0;
     if (caps_state != led_state.caps_lock) {
@@ -117,7 +99,7 @@ bool led_update_user(led_t led_state) {
 
 
 layer_state_t layer_state_set_user(layer_state_t state) {
-	caplock_layer_rgb();
+	caplock_layer_rgb(state);
 	/*
 	if (host_keyboard_led_state().caps_lock) {
 		rgb_matrix_enable_noeeprom();
@@ -147,7 +129,6 @@ layer_state_t layer_state_set_user(layer_state_t state) {
 
 
 
-// clang-format off
 
 enum layers{
     MAC_BASE,
